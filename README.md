@@ -15,6 +15,7 @@ In order to close the virtual environment run the following:
 ```
     deactivate
 ```
+<br>
 
 ## Install Packages (or Dependencies)
 Once you are in the virtual environment you can simply run:
@@ -22,6 +23,7 @@ Once you are in the virtual environment you can simply run:
     pip install <YOUR_PACKAGE_NAME>
 ```
 to install any packages that is needed.
+<br><br>
 
 ## Start the application
 To run the application you can simply run the following command once you are in the virtual environment.
