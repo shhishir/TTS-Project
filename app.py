@@ -3,11 +3,13 @@ import pyttsx3
 import os
 import uuid  # For unique filenames
 import platform  # To provide OS-specific advice
+import threading  # For thread safety
 
 app = Flask(__name__)
 UPLOAD_FOLDER = "outputs"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Ensure the output directory exists
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+tts_lock = threading.Lock()  # Lock for thread safety
 
 
 def text_to_speech_pyttsx3(text, output_filename):
@@ -35,13 +37,14 @@ def text_to_speech_pyttsx3(text, output_filename):
     # engine.setProperty('volume', 0.9) # Volume (0.0 to 1.0)
     # --- End Optional Customization ---
 
-    try:
-        engine.save_to_file(text, output_filename)
-        engine.runAndWait()
-        return True
-    except Exception as e:
-        print(f"pyttsx3 error: {e}")
-        return False
+    with tts_lock:  # Ensure thread safety
+        try:
+            engine.save_to_file(text, output_filename)
+            engine.runAndWait()
+            return True
+        except Exception as e:
+            print(f"pyttsx3 error: {e}")
+            return False
 
 
 @app.route("/", methods=["GET"])
@@ -77,6 +80,7 @@ def synthesize():
         error_message = (
             "Failed to generate audio. The file might be empty or an error occurred."
         )
+        print(f"pyttsx3 boolean responce is: {success}")
         if not success:
             error_message = "An error occurred with the TTS engine."
         if os.path.exists(filepath):  # remove empty/corrupt file
@@ -99,9 +103,5 @@ def download_file(filename):
 if __name__ == "__main__":
     print("Starting Flask Text-to-Speech App...")
     print("Important: `pyttsx3` relies on system-installed speech engines.")
-    print("- On Windows: Uses SAPI5 (should work out-of-the-box).")
     print("- On macOS: Uses NSSpeechSynthesizer (should work out-of-the-box).")
-    print(
-        "- On Linux: Often uses eSpeak. You might need to install it: `sudo apt-get install espeak` (or similar for your distribution)."
-    )
     app.run(debug=True, port=5000)
