@@ -152,7 +152,7 @@
             <textarea id="text_input" name="text_input" rows="6"
                 required>{{ submitted_text if submitted_text else '' }}</textarea>
             <div class="button-container">
-                <input type="submit" value="🎤 Convert to Speech">
+                <input type="submit" value="🎤 Convert & Play">
             </div>
         </form>
 
@@ -163,22 +163,19 @@
         </div>
         {% endif %}
 
-        {% if audio_file %}
+        {% if audio_url %}
         <div class="audio-section">
-            <p>✅ Your audio is ready!</p>
+            <p class="status">✅ Your audio is ready to play!</p>
             {% if submitted_text %}
             <div class="submitted-text-display">
                 <strong>Synthesized text:</strong>
                 <p>{{ submitted_text }}</p>
             </div>
             {% endif %}
-            <audio controls>
-                <source src="{{ url_for('download_file', filename=audio_file) }}" type="audio/mpeg">
-                Your browser does not support the audio element. Try downloading it.
+            <audio controls autoplay>
+                <source src="{{ audio_url }}" type="audio/m4a">
+                Your browser does not support the audio element.
             </audio>
-            <br>
-            <a href="{{ url_for('download_file', filename=audio_file) }}" class="download-link" download>⬇️ Download
-                Audio ({{ audio_file }})</a>
         </div>
         {% endif %}
     </div>
