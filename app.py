@@ -42,7 +42,6 @@ def tts_ppyttsx(text, output_audio_file):
             for preferred_id in MACOS_PREFERRED_VOICES:
                 if preferred_id in avilable_voice_ids:
                     selected_voice_id = preferred_id
-                    print("DEBUG: Found preferred voice:", preferred_id)
                     break
 
             if not selected_voice_id:
@@ -51,12 +50,7 @@ def tts_ppyttsx(text, output_audio_file):
                     f"!!! WARNING: Preferred voice not found. Using default voice instead: {selected_voice_id}."
                 )
             if selected_voice_id:
-                print(f"DEBUG: Attempting to set voice to: {selected_voice_id}")
                 engine.setProperty("voice", selected_voice_id)
-                # --- Commit the voice change (crucial on macOS) ---
-                # engine.say(text)  # Say a tiny, almost silent piece of text
-                # engine.runAndWait()
-                # --- End commit ---
 
                 current_voice_check = engine.getProperty("voice")
                 if current_voice_check == selected_voice_id:
@@ -76,16 +70,18 @@ def tts_ppyttsx(text, output_audio_file):
                 f"DEBUG: Running on {current_os}. Using default pyttsx3 voice behavior."
             )
 
-        engine.setProperty(
-            "rate", 180
-        )  # Slightly faster rate can sound more natural for some voices
+        # Set properties for the speech engine
+        engine.setProperty("rate", 180)
         engine.setProperty("volume", 0.9)
 
-        print("DEBUG: Engine properties configured. Calling save_to_file...")
+        # Set the output audio file format based on the file extension
         engine.save_to_file(text, output_audio_file)
-        print("DEBUG: save_to_file called. Calling runAndWait...")
-        engine.runAndWait()  # This is the blocking call
-        print("DEBUG: runAndWait completed.")
+
+        # Run the engine to process the text and save it to the file
+        engine.runAndWait()
+
+        # Clean up the engine instance
+        del engine
 
         if os.path.exists(output_audio_file) and os.path.getsize(output_audio_file) > 0:
             print(
@@ -94,7 +90,7 @@ def tts_ppyttsx(text, output_audio_file):
             return True
         elif os.path.exists(output_audio_file):
             print(f"!!! FAILURE: File '{output_audio_file}' was created BUT IS EMPTY.")
-            # os.remove(full_output_filepath) # Clean up empty file
+            os.remove(output_audio_file)  # Clean up empty file
             return False
         else:
             print(f"!!! FAILURE: File '{output_audio_file}' was NOT created.")
@@ -110,8 +106,8 @@ def tts_ppyttsx(text, output_audio_file):
 @app.route("/", methods=["GET"])
 def index():
     # Clean up old files if needed (optional, for a long-running app)
-    # for f in os.listdir(app.config['UPLOAD_FOLDER']):
-    #     os.remove(os.path.join(app.config['UPLOAD_FOLDER'], f))
+    # for f in os.listdir(app.config["UPLOAD_FOLDER"]):
+    # os.remove(os.path.join(app.config["UPLOAD_FOLDER"], f))
     return render_template("index.html", audio_url=None)
 
 
@@ -145,7 +141,6 @@ def synthesize():
         error_message = (
             "Failed to generate audio. The file might be empty or an error occurred."
         )
-        print(f"pyttsx3 boolean responce is: {success}")
         if not success:
             error_message = "An error occurred with the TTS engine."
         if os.path.exists(filepath):  # remove empty/corrupt file
