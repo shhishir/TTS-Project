@@ -27,7 +27,12 @@ jobs:
         run: |
           sudo sed -i 's/6.11.0-1014-azure/20.04/' /etc/lsb-release || true
           sudo sed -i 's/6.11.0-1014-azure/20.04/' /etc/os-release || true
-
+      
+      - name: Debug OS version files
+        run: |
+          cat /etc/lsb-release || true
+          cat /etc/os-release || true
+      
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
