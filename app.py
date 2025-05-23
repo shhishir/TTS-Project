@@ -51,10 +51,6 @@ def tts_ppyttsx(text, output_audio_file):
                 )
             if selected_voice_id:
                 engine.setProperty("voice", selected_voice_id)
-                # --- Commit the voice change (crucial on macOS) ---
-                # engine.say(text)  # Say a tiny, almost silent piece of text
-                # engine.runAndWait()
-                # --- End commit ---
 
                 current_voice_check = engine.getProperty("voice")
                 if current_voice_check == selected_voice_id:
@@ -74,13 +70,18 @@ def tts_ppyttsx(text, output_audio_file):
                 f"DEBUG: Running on {current_os}. Using default pyttsx3 voice behavior."
             )
 
+        # Set properties for the speech engine
         engine.setProperty("rate", 180)
         engine.setProperty("volume", 0.9)
 
         # Set the output audio file format based on the file extension
         engine.save_to_file(text, output_audio_file)
 
-        engine.runAndWait()  # This is the blocking call
+        # Run the engine to process the text and save it to the file
+        engine.runAndWait()
+
+        # Clean up the engine instance
+        del engine
 
         if os.path.exists(output_audio_file) and os.path.getsize(output_audio_file) > 0:
             print(
