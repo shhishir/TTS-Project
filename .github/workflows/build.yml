@@ -2,36 +2,23 @@ name: Build Flask TTS App
 
 on:
   push:
-    branches: [main]
+    branches: [main, 3-fix-the-workflow-error]
   pull_request:
-    branches: [main]
+    branches: [main, 3-fix-the-workflow-error]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+    container:
+      image: python:3.11-bullseye
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-    
       - name: Upgrade pip, setuptools, wheel
         run: |
           python -m pip install --upgrade pip setuptools wheel
-
-      - name: Workaround for lsb_release version bug
-        run: |
-          sudo sed -i 's/6.11.0-1014-azure/20.04/' /etc/lsb-release || true
-          sudo sed -i 's/6.11.0-1014-azure/20.04/' /etc/os-release || true
-      
-      - name: Debug OS version files
-        run: |
-          cat /etc/lsb-release || true
-          cat /etc/os-release || true
       
       - name: Install dependencies
         run: |
