@@ -35,6 +35,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --no-cache-dir -r requirements.txt
+          pip install black flake8
 
       - name: Format code with black
         run: black --line-length 79 app.py
