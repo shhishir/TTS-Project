@@ -1,10 +1,7 @@
 name: Build Flask TTS App
 
 on:
-  push:
-    branches: [main, 3-fix-the-workflow-error]
-  pull_request:
-    branches: [main, 3-fix-the-workflow-error]
+  [push, pull_request]
 
 jobs:
   build:
@@ -19,40 +16,13 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install system dependencies
-        run: |
-          apt-get update && apt-get install -y \
-            build-essential \
-            gcc \
-            libffi-dev \
-            libsndfile1 \
-            libasound2-dev \
-            libpython3-dev \
-            git \
-            curl
-
-      - name: Upgrade pip, setuptools, wheel
-        run: |
-          python -m pip install --upgrade pip setuptools wheel
-
       - name: Install dependencies
         run: |
-          pip install --no-cache-dir -r requirements.txt
-          pip install black flake8
+            python -m pip install --upgrade pip
+            pip install black flake8
 
       - name: Format code with black
         run: black --line-length 79 app.py
 
       - name: Lint with flake8
-        run: |
-          flake8 app.py
-
-      - name: Archive app
-        run: |
-          zip -r tts_project.zip app.py templates/ requirements.txt
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: tts_project_build
-          path: tts_project.zip
+        run: flake8 app.py
