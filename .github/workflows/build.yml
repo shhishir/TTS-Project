@@ -40,13 +40,3 @@ jobs:
         run: |
           pip install flake8
           flake8 app.py || true
-
-      - name: Archive app
-        run: |
-          zip -r tts_project.zip app.py templates/ requirements.txt
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: tts_project_build
-          path: tts_project.zip
