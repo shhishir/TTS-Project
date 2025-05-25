@@ -4,7 +4,7 @@ Flask==3.1.1
 itsdangerous==2.2.0
 Jinja2==3.1.6
 MarkupSafe==3.0.2
-pyobjc==11.0
+pyobjc==11.0; sys_platform == "darwin"
 pyobjc-core==11.0
 pyobjc-framework-Accessibility==11.0
 pyobjc-framework-Accounts==11.0
@@ -159,4 +159,5 @@ pyobjc-framework-VideoToolbox==11.0
 pyobjc-framework-Virtualization==11.0
 pyobjc-framework-Vision==11.0
 pyobjc-framework-WebKit==11.0
+pyttsx3==2.98
 Werkzeug==3.1.3
