@@ -5,7 +5,7 @@ itsdangerous==2.2.0
 Jinja2==3.1.6
 MarkupSafe==3.0.2
 pyobjc==11.0; sys_platform == "darwin"
-pyobjc-core==11.0
+pyobjc-core==11.0; sys_platform == "darwin"
 pyobjc-framework-Accessibility==11.0
 pyobjc-framework-Accounts==11.0
 pyobjc-framework-AddressBook==11.0
