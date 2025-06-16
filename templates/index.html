@@ -172,10 +172,25 @@
                 <p>{{ submitted_text }}</p>
             </div>
             {% endif %}
-            <audio controls autoplay>
+            <audio id="tts-audio" controls autoplay>
                 <source src="{{ audio_url }}" type="audio/m4a">
                 Your browser does not support the audio element.
             </audio>
+            <script>
+                var audio = document.getElementById('tts-audio');
+                audio.addEventListener('error', function (e) {
+                    console.log('Audio error:', audio.error);
+                    alert('Audio could not be loaded. Please check the server log and audio file.');
+                });
+                window.addEventListener('DOMContentLoaded', function () {
+                    if (audio) {
+                        audio.play().catch(function (e) {
+                            console.log('Autoplay blocked:', e);
+                        });
+                    }
+                });
+            </script>
+
         </div>
         {% endif %}
     </div>
